@@ -1,6 +1,7 @@
 package ru.geekbrains.smirnov.lesson1.assignment;
 
-    // Задание N1
+    // Задание N1 
+    // (Пришлось внести изменение в файл в виде комментария, чтобы отобразить его отдельно в Pull requests)
 public class HomeWorkApp {
     public static void main(String[] args){
 
