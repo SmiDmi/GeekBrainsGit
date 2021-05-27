@@ -9,11 +9,11 @@ public class HomeWorkApp_4_Lesson {
 //   2) Переделать проверку победы, чтобы она не была реализована просто набором условий, например, с использованием циклов.
 //   3) * Попробовать переписать логику проверки победы, чтобы она работала для поля 5х5 и количества фишек 4.
 //      Очень желательно не делать это просто набором условий для каждой из возможных ситуаций;
-//   4) *** Доработать искусственный интеллект, чтобы он мог блокировать ходы игрока.
+//   (Не успел) 4) *** Доработать искусственный интеллект, чтобы он мог блокировать ходы игрока.
     
     public static char[][] map;
-    public static final int SIZE = 3;
-    public static final int DOTS_TO_WIN = 3;
+    public static final int SIZE = 5;
+    public static final int DOTS_TO_WIN = 4;
 
     public static final char DOT_EMPTY = '•';
     public static final char DOT_X = 'X';
@@ -113,14 +113,94 @@ public class HomeWorkApp_4_Lesson {
 
     // Проверка победы.
     public static boolean checkWin(char symb) {
-        if(map[0][0] == symb && map[0][1] == symb && map[0][2] == symb) return true;
-        if(map[1][0] == symb && map[1][1] == symb && map[1][2] == symb) return true;
-        if(map[2][0] == symb && map[2][1] == symb && map[2][2] == symb) return true;
-        if(map[0][0] == symb && map[1][0] == symb && map[2][0] == symb) return true;
-        if(map[0][1] == symb && map[1][1] == symb && map[2][1] == symb) return true;
-        if(map[0][2] == symb && map[1][2] == symb && map[2][2] == symb) return true;
-        if(map[0][0] == symb && map[1][1] == symb && map[2][2] == symb) return true;
-        if(map[2][0] == symb && map[1][1] == symb && map[0][2] == symb) return true;
+
+        int horizontal_line, vertical_line; // Горизонтальные и вертикальные линии для проверки
+        int diagonal, revDiagonal; // Диагонали в разных направлениях
+
+        for (int i = 0; i < SIZE; i++) {
+            horizontal_line = 0;
+            vertical_line = 0;
+            for (int j = 0; j < SIZE; j++) {
+                if (map[i][j] == symb) {
+                    horizontal_line++;
+                } else if (map[i][j] != symb && horizontal_line < DOTS_TO_WIN) {
+                    horizontal_line = 0;
+                }
+                if (map[j][i] == symb) {
+                    vertical_line++;
+                }   else if (map[j][i] != symb && vertical_line < DOTS_TO_WIN) {
+                    vertical_line = 0;
+                }
+                if (horizontal_line >= DOTS_TO_WIN || vertical_line >= DOTS_TO_WIN) {
+                    return true;
+                }
+            }
+            for (int j = 0; j < SIZE; j++) {
+                diagonal = 0;
+                for (i = 0; i < SIZE; i++) {
+                    int k = j + i;
+                    if (k < SIZE) {
+                        if (map[i][k] == symb) {
+                            diagonal++;
+                        } else if (map[i][k] != symb && diagonal < DOTS_TO_WIN) {
+                            diagonal = 0;
+                        }
+                    }
+                    if (diagonal >= DOTS_TO_WIN) {
+                        return true;
+                    }
+                }
+            }
+            for (int j = 1; j < SIZE; j++) {
+                diagonal = 0;
+                for (i = 0; i < SIZE; i++) {
+                    int k = j + i;
+                    if (k < SIZE) {
+                        if (map[k][i] == symb) {
+                            diagonal++;
+                        } else if (map[k][i] != symb && diagonal < DOTS_TO_WIN) {
+                            diagonal = 0;
+                        }
+                    }
+                    if (diagonal >= DOTS_TO_WIN) {
+                        return true;
+                    }
+                }
+            }
+            for (int j = 0; j < SIZE; j++) {
+                revDiagonal = 0;
+                for (i = 0; i < SIZE; i++) {
+                    int k = (SIZE - 1) - i;
+                    int l = j + i;
+                    if (k >= 0 && l < SIZE) {
+                        if (map[l][k] == symb) {
+                            revDiagonal++;
+                        } else if (map[l][k] != symb && revDiagonal < DOTS_TO_WIN) {
+                            revDiagonal = 0;
+                        }
+                    }
+                    if (revDiagonal >= DOTS_TO_WIN) {
+                        return true;
+                    }
+                }
+            }
+            for (int j = 1; j < SIZE; j++) {
+                revDiagonal = 0;
+                for (i = 0; i < SIZE; i++) {
+                    int k = (SIZE - 1) - j - i;
+                    if (k >= 0) {
+                        if (map[i][k] == symb) {
+                            revDiagonal++;
+                        } else if (map[i][k] != symb && revDiagonal < DOTS_TO_WIN) {
+                            revDiagonal = 0;
+                        }
+                    }
+                    if (revDiagonal >= DOTS_TO_WIN) {
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
     }
 }
