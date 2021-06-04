@@ -102,7 +102,55 @@ public class HomeWorkApp_4_Lesson {
     // Ход компьютера.
     public static Random rand = new Random();
     public static void aiTurn() {
+
+        int horizontal_line = 0; // Проверка по горизонтали
+        int vertical_line = 0; // Проверка по вертикали
+        int diagonal = 0; // Проверка по диагонялям в направлении \
+        int revDiagonal = 0; // Проверка по диагоналям в направлении /
+
         int x, y;
+
+        for (int i = 0; i <= SIZE - 1; i++) {
+            for (int j = 0; j <= SIZE - 1; j++) {
+                if (map[i][j] == DOT_X) {
+                    horizontal_line++;
+                    if (horizontal_line > 1 && horizontal_line < DOTS_TO_WIN) {
+                        System.out.println("Компьютер походил в точку " + (i + 1) + " " + (j + 1));
+                        map[i][j] = DOT_O;
+                    }
+                } else {
+                    break;
+                }
+                if (map[j][i] == DOT_X) {
+                    vertical_line++;
+                    if (vertical_line > 1 && vertical_line < DOTS_TO_WIN) {
+                        System.out.println("Компьютер походил в точку " + (j + 1) + " " + (i + 1));
+                        map[j][i] = DOT_O;
+                    }
+                } else {
+                    break;
+                }
+            }
+            if (map[i][i] == DOT_X) {
+                diagonal++;
+                if (diagonal > 1 && diagonal < DOTS_TO_WIN) {
+                    System.out.println("Компьютер походил в точку " + (i + 1) + " " + (i + 1));
+                    map[i][i] = DOT_O;
+                }
+            } else {
+                break;
+            }
+            if (map[i][SIZE - 1 - i] == DOT_X) {
+                revDiagonal++;
+                if (revDiagonal > 1 && revDiagonal < DOTS_TO_WIN) {
+                    System.out.println("Компьютер походил в точку " + (i + 1) + " " + ((SIZE - 1 - i) + 1));
+                    map[i][SIZE - 1 - i] = DOT_O;
+                }
+            } else {
+                break;
+            }
+        }
+
         do {
             x = rand.nextInt(SIZE);
             y = rand.nextInt(SIZE);
@@ -114,91 +162,45 @@ public class HomeWorkApp_4_Lesson {
     // Проверка победы.
     public static boolean checkWin(char symb) {
 
-        int horizontal_line, vertical_line; // Горизонтальные и вертикальные линии для проверки
-        int diagonal, revDiagonal; // Диагонали в разных направлениях
+        int horizontal_line = 0; // Проверка по горизонтали
+        int vertical_line = 0; // Проверка по вертикали
+        int diagonal = 0; // Проверка по диагонялям в направлении \
+        int revDiagonal = 0; // Проверка по диагоналям в направлении /
 
-        for (int i = 0; i < SIZE; i++) {
-            horizontal_line = 0;
-            vertical_line = 0;
-            for (int j = 0; j < SIZE; j++) {
+        for (int i = 0; i <= SIZE - 1; i++) {
+            for (int j = 0; j <= SIZE - 1; j++) {
                 if (map[i][j] == symb) {
                     horizontal_line++;
-                } else if (map[i][j] != symb && horizontal_line < DOTS_TO_WIN) {
+                    if (horizontal_line == DOTS_TO_WIN) {
+                        return true;
+                    }
+                } else {
                     horizontal_line = 0;
                 }
                 if (map[j][i] == symb) {
                     vertical_line++;
-                }   else if (map[j][i] != symb && vertical_line < DOTS_TO_WIN) {
+                    if (vertical_line == DOTS_TO_WIN) {
+                        return true;
+                    }
+                } else {
                     vertical_line = 0;
                 }
-                if (horizontal_line >= DOTS_TO_WIN || vertical_line >= DOTS_TO_WIN) {
+            }
+            if (map[i][i] == symb) {
+                diagonal++;
+                if (diagonal == DOTS_TO_WIN) {
                     return true;
                 }
-            }
-            for (int j = 0; j < SIZE; j++) {
+            } else {
                 diagonal = 0;
-                for (i = 0; i < SIZE; i++) {
-                    int k = j + i;
-                    if (k < SIZE) {
-                        if (map[i][k] == symb) {
-                            diagonal++;
-                        } else if (map[i][k] != symb && diagonal < DOTS_TO_WIN) {
-                            diagonal = 0;
-                        }
-                    }
-                    if (diagonal >= DOTS_TO_WIN) {
-                        return true;
-                    }
-                }
             }
-            for (int j = 1; j < SIZE; j++) {
-                diagonal = 0;
-                for (i = 0; i < SIZE; i++) {
-                    int k = j + i;
-                    if (k < SIZE) {
-                        if (map[k][i] == symb) {
-                            diagonal++;
-                        } else if (map[k][i] != symb && diagonal < DOTS_TO_WIN) {
-                            diagonal = 0;
-                        }
-                    }
-                    if (diagonal >= DOTS_TO_WIN) {
-                        return true;
-                    }
+            if (map[i][SIZE - 1 - i] == symb) {
+                revDiagonal++;
+                if (revDiagonal == DOTS_TO_WIN) {
+                    return true;
                 }
-            }
-            for (int j = 0; j < SIZE; j++) {
+            } else {
                 revDiagonal = 0;
-                for (i = 0; i < SIZE; i++) {
-                    int k = (SIZE - 1) - i;
-                    int l = j + i;
-                    if (k >= 0 && l < SIZE) {
-                        if (map[l][k] == symb) {
-                            revDiagonal++;
-                        } else if (map[l][k] != symb && revDiagonal < DOTS_TO_WIN) {
-                            revDiagonal = 0;
-                        }
-                    }
-                    if (revDiagonal >= DOTS_TO_WIN) {
-                        return true;
-                    }
-                }
-            }
-            for (int j = 1; j < SIZE; j++) {
-                revDiagonal = 0;
-                for (i = 0; i < SIZE; i++) {
-                    int k = (SIZE - 1) - j - i;
-                    if (k >= 0) {
-                        if (map[i][k] == symb) {
-                            revDiagonal++;
-                        } else if (map[i][k] != symb && revDiagonal < DOTS_TO_WIN) {
-                            revDiagonal = 0;
-                        }
-                    }
-                    if (revDiagonal >= DOTS_TO_WIN) {
-                        return true;
-                    }
-                }
             }
         }
         return false;
